@@ -10,7 +10,7 @@ A minimal macOS app that switches your keyboard input source (language) when you
 
 ## Download
 
-Download the latest version from [GitHub Releases](https://github.com/tonku321/FnLangSwitch/releases/latest).
+Download the latest version from [GitHub Releases]([https://github.com/tonku321/FnLangSwitch/releases/latest](https://github.com/tonku321/fn-lang-switcher/releases/latest)).
 
 ## Usage
 
