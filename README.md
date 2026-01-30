@@ -1,12 +1,14 @@
-![FnLangSwitch](FnLangSwitch.png)
-
 ## Problem
 
 macOS uses FN/Globe key to show an input source picker popup, which is slow and distracting. FnLangSwitch replaces that with a direct, instant toggle between your keyboard layouts.
 
 ## Solution
 
+<img src="FnLangSwitch.png" align="left" width="400">
+
 A minimal macOS app that switches your keyboard input source (language) when you press the **FN** key. No popups, no delays — instant, invisible switching. The app runs in the background with no dock icon and no menu bar icon.
+
+<br clear="left">
 
 ## Download
 
