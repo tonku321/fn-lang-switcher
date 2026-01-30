@@ -4,7 +4,7 @@ macOS uses FN/Globe key to show an input source picker popup, which is slow and 
 
 ## Solution
 
-<img src="img.png" align="left" width="400">
+<img src="screenshot.png" align="left" width="400">
 
 A minimal macOS app that switches your keyboard input source (language) when you press the **FN** key. No popups, no delays — instant, invisible switching. The app runs in the background with no dock icon and no menu bar icon.
 
