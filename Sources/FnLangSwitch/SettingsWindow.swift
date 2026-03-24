@@ -6,6 +6,8 @@ struct SettingsView: View {
         SMAppService.mainApp.status == .enabled
     }()
 
+    @AppStorage("switchOnRelease") private var switchOnRelease = false
+
     var body: some View {
         VStack(spacing: 16) {
             Text("Press the FN key to switch keyboard input source.")
@@ -18,6 +20,7 @@ struct SettingsView: View {
                         setLaunchAtLogin(newValue)
                     }
 
+                Toggle("Switch on Fn release (ignores Fn+key combos)", isOn: $switchOnRelease)
             }
 
             Spacer()
@@ -27,7 +30,7 @@ struct SettingsView: View {
             }
         }
         .padding(24)
-        .frame(width: 400, height: 160)
+        .frame(width: 400, height: 200)
     }
 
     private func setLaunchAtLogin(_ enabled: Bool) {
