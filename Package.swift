@@ -8,6 +8,7 @@ let package = Package(
         .executableTarget(
             name: "FnLangSwitch",
             path: "Sources/FnLangSwitch",
+            exclude: ["Info.plist"],
             linkerSettings: [
                 .linkedFramework("Carbon"),
                 .linkedFramework("AppKit"),
