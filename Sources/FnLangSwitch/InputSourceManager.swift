@@ -25,6 +25,7 @@ final class InputSourceManager {
     }
 
     func toggleInputSource() {
+        Diagnostics.log("switch.request sourceCount=\(inputSources.count)")
         guard inputSources.count > 1 else { return }
 
         let current = TISCopyCurrentKeyboardInputSource().takeRetainedValue()
@@ -35,7 +36,15 @@ final class InputSourceManager {
             nextIndex = (idx + 1) % inputSources.count
         }
 
-        TISSelectInputSource(inputSources[nextIndex])
+        let target = inputSourceID(inputSources[nextIndex])
+        let status = TISSelectInputSource(inputSources[nextIndex])
+        let actual = inputSourceID(TISCopyCurrentKeyboardInputSource().takeRetainedValue())
+        Diagnostics.log("switch.result from=\(currentID) target=\(target) status=\(status) actual=\(actual)")
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { [weak self] in
+            guard let self else { return }
+            let actual = self.inputSourceID(TISCopyCurrentKeyboardInputSource().takeRetainedValue())
+            Diagnostics.log("switch.verify target=\(target) actual=\(actual)")
+        }
     }
 
     private func inputSourceID(_ source: TISInputSource) -> String {
