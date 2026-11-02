@@ -28,3 +28,20 @@ Download the latest version from [GitHub Releases](https://github.com/tonku321/f
 - Keeps per-device Fn state so duplicate values and overlapping keyboard presses do not switch twice.
 - Writes bounded diagnostic logs to `~/Library/Logs/FnLangSwitch/diagnostics.log`: permission and HID startup results, Fn transitions, cancellation, and input-source selection results. Logs do not contain typed text or ordinary key codes.
 - Switches input sources using the Carbon `TISSelectInputSource` API
+
+### Diagnostic log v2
+
+Each Fn press/release records cancellation reasons, the number of held keys and Fn devices,
+the age of the last ordinary-key HID event (`-1` means none observed), blocking modifier names,
+and Secure Input state. Reasons retained from press to release distinguish an already-held key,
+modifiers, Secure Input, a later hardware chord, other event types, and overlapping Fn devices.
+`outcome=longHold` identifies the existing 400 ms duration limit separately from cancellation.
+Sleep/wake and session transitions record snapshots without changing keyboard state.
+No typed text, ordinary key codes, key identities, or device identifiers are written to the log.
+Switching behavior is unchanged.
+
+### Журнал работ и восстановление
+
+См. [docs/OPERATIONS.md](docs/OPERATIONS.md): история изменений и сбоев,
+проверка установки, восстановление мониторинга ввода после обновления подписи.
+Этот журнал нужно обновлять после следующих изменений и разборов сбоев.

@@ -5,6 +5,12 @@ import IOKit.hid
 final class FnHIDMonitor {
     private var manager: IOHIDManager?
     private var heldKeys = Set<String>()
+    private var lastKeyStateChange: TimeInterval?
+    var heldKeyCount: Int { heldKeys.count }
+    var keyStateAgeMs: Int {
+        guard let lastKeyStateChange else { return -1 }
+        return Int((ProcessInfo.processInfo.systemUptime - lastKeyStateChange) * 1000)
+    }
     var hasOtherKeysDown: Bool { !heldKeys.isEmpty }
     var onOtherKey: (() -> Void)?
     var onState: ((UInt64, Bool) -> Void)?
@@ -21,7 +27,11 @@ final class FnHIDMonitor {
         ]
         IOHIDManagerSetInputValueMatchingMultiple(hid, matches as CFArray)
         IOHIDManagerRegisterInputValueCallback(hid, { context, result, _, value in
-            guard result == kIOReturnSuccess, let context else { return }
+            guard result == kIOReturnSuccess else {
+                Diagnostics.log("hid.callback.error result=\(result)")
+                return
+            }
+            guard let context else { return }
             let owner = Unmanaged<FnHIDMonitor>.fromOpaque(context).takeUnretainedValue()
             let element = IOHIDValueGetElement(value)
             let page = IOHIDElementGetUsagePage(element)
@@ -35,6 +45,7 @@ final class FnHIDMonitor {
                 // Ignore HID error/rollover values; retain only temporary pressed-state identity.
                 guard usage > 3 else { return }
                 let identity = "\(id):\(IOHIDElementGetCookie(element))"
+                owner.lastKeyStateChange = ProcessInfo.processInfo.systemUptime
                 if down {
                     owner.heldKeys.insert(identity)
                     owner.onOtherKey?()
