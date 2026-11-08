@@ -4,6 +4,19 @@ set -e
 APP_NAME="FnLangSwitch"
 APP_BUNDLE=".build/$APP_NAME.app"
 
+# Newer SDKs (27+) implement SwiftUI's @State as a macro, whose plugin ships only
+# with full Xcode. If the toolchain lacks it, fall back to the newest 26.x SDK.
+if [ -z "$SDKROOT" ]; then
+    TOOLCHAIN_DIR="$(dirname "$(dirname "$(xcrun --find swift)")")"
+    if ! ls "$TOOLCHAIN_DIR"/lib/swift/host/plugins/*SwiftUIMacros* > /dev/null 2>&1; then
+        FALLBACK_SDK="$(ls -d "$(xcode-select -p)"/SDKs/MacOSX26*.sdk 2>/dev/null | sort -V | tail -1)"
+        if [ -n "$FALLBACK_SDK" ]; then
+            echo "SwiftUI macros plugin not found, using $FALLBACK_SDK"
+            export SDKROOT="$FALLBACK_SDK"
+        fi
+    fi
+fi
+
 # Build release
 swift build -c release
 

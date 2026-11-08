@@ -34,8 +34,25 @@ final class KeyMonitor {
     private func handleEvent(_ event: NSEvent) {
         if event.type == .flagsChanged {
             handleFlags(event)
-        } else if fnWasDown && switchOnRelease {
+            return
+        }
+        if fnWasDown && switchOnRelease {
             otherKeyPressed = true
+        }
+        if event.type == .keyDown && Self.isGraphicInput(event) {
+            inputSourceManager.noteGraphicInput()
+        }
+    }
+
+    /// True if the key event produces printable text (not a shortcut, arrow, F-key, etc.).
+    private static func isGraphicInput(_ event: NSEvent) -> Bool {
+        let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+        if !flags.isDisjoint(with: [.command, .control, .function]) { return false }
+        guard let chars = event.characters, !chars.isEmpty else { return false }
+        return chars.unicodeScalars.contains { scalar in
+            // 0xF700–0xF8FF: AppKit function-key codes (arrows, F1…, Home, etc.)
+            !CharacterSet.controlCharacters.contains(scalar)
+                && !(0xF700...0xF8FF).contains(scalar.value)
         }
     }
 
