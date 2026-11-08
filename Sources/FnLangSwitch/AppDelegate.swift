@@ -15,6 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         setSystemIndicator(enabled: false)
         keyMonitor.start()
+        log.notice("started, AXIsProcessTrusted=\(AXIsProcessTrusted(), privacy: .public)")
 
         let isLoginItem = SMAppService.mainApp.status == .enabled
         let event = NSAppleEventManager.shared().currentAppleEvent
